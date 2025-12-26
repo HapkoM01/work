@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "bank-widget"
+version = "1.0.0"
+description = "Виджет для отображения банковских операций"
+authors = ["Your Name <your.email@example.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.8.1,<4.0"  # Изменено с "^3.8" на ">=3.8.1"
+
+[tool.poetry.group.lint.dependencies]
+flake8 = "^7.0.0"
+black = "^24.0.0"
+isort = "^5.13.0"
+mypy = "^1.8.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+exclude = '''
+/(
+    \.git
+  | __pycache__
+)/
+'''
+
+[tool.isort]
+line_length = 120
+multi_line_output = 3
+
+[tool.mypy]
+disallow_untyped_defs = true
+warn_return_any = true
+exclude = ['venv/']
