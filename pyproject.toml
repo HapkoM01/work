@@ -4,10 +4,7 @@ version = "1.0.0"
 description = "Виджет для отображения банковских операций"
 authors = ["Your Name <your.email@example.com>"]
 readme = "README.md"
-packages = [
-    { include = "src", from = "." },
-    { include = "tests", from = "." },
-]
+packages = [{include = "src", from = "."}]
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
