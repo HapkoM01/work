@@ -52,6 +52,25 @@
 **filter_by_state(operations: list, state: str = 'EXECUTED') -> list**
 Фильтрует список операций по статусу выполнения.
 
+## Тестирование
+
+Проект использует `pytest` для тестирования.
+
+### Запуск тестов
+
+```bash
+# Запуск всех тестов
+poetry run pytest
+
+# Запуск с детальным выводом
+poetry run pytest -v
+
+# Запуск конкретного модуля
+poetry run pytest tests/test_masks_pytest.py -v
+
+# Запуск с покрытием кода
+poetry run pytest --cov=src --cov-report=html
+
 ## Установка:
 
 1. Клонируйте репозиторий:
