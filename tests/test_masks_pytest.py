@@ -1,5 +1,6 @@
 import pytest
-from src.masks import get_mask_card_number, get_mask_account
+
+from src.masks import get_mask_account, get_mask_card_number
 
 
 class TestGetMaskCardNumber:
@@ -12,7 +13,7 @@ class TestGetMaskCardNumber:
             ("1234567890123456", "1234 56** **** 3456"),
             ("1111222233334444", "1111 22** **** 4444"),
             ("1234567890", "1234 56** **** 7890"),  # Минимальная длина
-        ]
+        ],
     )
     def test_valid_card_numbers(self, card_number: str, expected: str) -> None:
         """Тест правильности маскирования валидных номеров карт."""
@@ -24,7 +25,7 @@ class TestGetMaskCardNumber:
             ("7800 7922 8966 361", "7800 79** **** 6361"),
             ("1234-5678-9012-3456", "1234 56** **** 3456"),
             ("1111 2222 3333 4444", "1111 22** **** 4444"),
-        ]
+        ],
     )
     def test_card_numbers_with_separators(self, card_number: str, expected: str) -> None:
         """Тест номеров карт с разделителями."""
@@ -37,7 +38,7 @@ class TestGetMaskCardNumber:
             "123",  # Слишком короткий
             "abcdefghij",  # Нет цифр
             "123456789",  # 9 цифр (<10)
-        ]
+        ],
     )
     def test_invalid_card_numbers(self, invalid_input: str) -> None:
         """Тест обработки невалидных номеров карт."""
@@ -62,7 +63,7 @@ class TestGetMaskAccount:
             ("1234567890", "**7890"),
             ("11112222333344445555", "**5555"),
             ("1234", "**1234"),  # Минимальная длина
-        ]
+        ],
     )
     def test_valid_account_numbers(self, account_number: str, expected: str) -> None:
         """Тест правильности маскирования валидных номеров счетов."""
@@ -74,7 +75,7 @@ class TestGetMaskAccount:
             ("7365 4188 4381 3587 4305", "**4305"),
             ("1234-5678-90", "**7890"),
             ("1111 2222 3333 4444 5555", "**5555"),
-        ]
+        ],
     )
     def test_account_numbers_with_separators(self, account_number: str, expected: str) -> None:
         """Тест номеров счетов с разделителями."""
@@ -87,7 +88,7 @@ class TestGetMaskAccount:
             "123",  # Слишком короткий
             "abc",  # Нет цифр
             "abc123",  # Слишком короткий после очистки
-        ]
+        ],
     )
     def test_invalid_account_numbers(self, invalid_input: str) -> None:
         """Тест обработки невалидных номеров счетов."""

@@ -1,5 +1,6 @@
 import pytest
-from src.widget import mask_account_card, get_date
+
+from src.widget import get_date, mask_account_card
 
 
 class TestMaskAccountCard:
@@ -44,7 +45,7 @@ class TestMaskAccountCard:
             "",  # Пустая строка
             "Visa",  # Только тип
             "1234567890123456",  # Только номер
-        ]
+        ],
     )
     def test_invalid_inputs(self, input_str: str) -> None:
         """Тест обработки некорректных входных данных."""
@@ -84,7 +85,7 @@ class TestGetDate:
         [
             ("2024-03-11", "11.03.2024"),  # Без времени
             ("2024-03-11T", "11.03.2024"),  # Пустое время
-        ]
+        ],
     )
     def test_partial_date_strings(self, date_string: str, expected: str) -> None:
         """Тест частичных строк с датой."""
@@ -98,7 +99,7 @@ class TestGetDate:
             "invalid-date",  # Неправильный формат
             "2024/03/11",  # Неправильный разделитель
             "2024-13-11T00:00:00",  # Неправильный месяц
-        ]
+        ],
     )
     def test_invalid_dates(self, invalid_date: str) -> None:
         """Тест обработки невалидных дат."""

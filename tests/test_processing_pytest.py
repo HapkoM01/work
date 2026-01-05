@@ -1,4 +1,5 @@
 import pytest
+
 from src.processing import filter_by_state, sort_by_date
 
 
@@ -66,7 +67,7 @@ class TestFilterByState:
             ("CANCELED", 2),
             ("PENDING", 1),
             ("INVALID", 0),
-        ]
+        ],
     )
     def test_parametrized_states(self, sample_operations, state, expected_count):
         """Параметризованный тест для разных статусов."""
@@ -154,7 +155,7 @@ class TestSortByDate:
         [
             (True, "2024-04-01", "2023-12-31"),  # По убыванию
             (False, "2023-12-31", "2024-04-01"),  # По возрастанию
-        ]
+        ],
     )
     def test_parametrized_sorting(self, unsorted_operations, descending, first_date, last_date):
         """Параметризованный тест для разных направлений сортировки."""
