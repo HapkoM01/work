@@ -51,6 +51,24 @@
 **filter_by_state(operations: list, state: str = 'EXECUTED') -> list**
 Фильтрует список операций по статусу выполнения.
 
+## Модуль generators
+
+Новый модуль для работы с генераторами транзакций.
+
+### Функции:
+
+#### `filter_by_currency(transactions, currency_code)`
+Фильтрует транзакции по коду валюты и возвращает итератор.
+
+from src.generators import filter_by_currency
+
+transactions = [...]  # список транзакций
+usd_transactions = filter_by_currency(transactions, "USD")
+
+# Получение первых двух транзакций
+for _ in range(2):
+    print(next(usd_transactions))
+
 ## Тестирование
 
 Проект использует `pytest` для тестирования.

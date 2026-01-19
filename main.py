@@ -1,6 +1,7 @@
 from src.masks import get_mask_account, get_mask_card_number
 from src.widget import get_date, mask_account_card
 from src.processing import filter_by_state, sort_by_date
+from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
 
 
 def main() -> None:
@@ -40,7 +41,7 @@ def main() -> None:
     print(f"Исходная дата: {date_example}")
     print(f"Форматированная: {get_date(date_example)}")
 
-    # Примеры из модуля processing (ДОБАВЛЕНЫ!)
+    # Примеры из модуля processing
     print("\n\n3. Примеры работы модуля processing:")
     print("-" * 40)
 
@@ -64,6 +65,51 @@ def main() -> None:
     sorted_ops = sort_by_date(operations, True)
     for op in sorted_ops:
         print(f"  ID: {op['id']}, Date: {op['date']}")
+
+    # Примеры из модуля generators
+    print("\n\n4. Примеры работы модуля generators:")
+    print("-" * 40)
+
+    transactions = [
+        {
+            "id": 939719570,
+            "operationAmount": {
+                "amount": "9824.07",
+                "currency": {"code": "USD"}
+            },
+            "description": "Перевод организации"
+        },
+        {
+            "id": 142264268,
+            "operationAmount": {
+                "amount": "79114.93",
+                "currency": {"code": "USD"}
+            },
+            "description": "Перевод со счета на счет"
+        },
+        {
+            "id": 873106923,
+            "operationAmount": {
+                "amount": "43318.34",
+                "currency": {"code": "RUB"}
+            },
+            "description": "Перевод со счета на счет"
+        }
+    ]
+
+    print("Фильтрация по валюте (USD):")
+    usd_transactions = filter_by_currency(transactions, "USD")
+    for i, trans in enumerate(usd_transactions, 1):
+        print(f"  Транзакция {i}: ID={trans['id']}")
+
+    print("\nОписания транзакций:")
+    descriptions = transaction_descriptions(transactions)
+    for i, desc in enumerate(descriptions, 1):
+        print(f"  Описание {i}: {desc}")
+
+    print("\nГенерация номеров карт (1-5):")
+    for card in card_number_generator(1, 6):
+        print(f"  {card}")
 
     print("\n" + "=" * 60)
     print("Все функции работают корректно!")
