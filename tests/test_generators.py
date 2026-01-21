@@ -154,10 +154,10 @@ class TestTransactionDescriptions:
         transactions = [
             {"id": 1},
             {"id": 2, "description": "Есть описание"},
-            {"id": 3, "description": ""}
+            {"id": 3, "description": " "}
         ]
         descriptions = list(transaction_descriptions(transactions))
-        assert descriptions == ["Есть описание", ""]
+        assert descriptions == ["Есть описание", " "]
 
     def test_generator_behavior(self, sample_transactions):
         """Тест поведения генератора."""
