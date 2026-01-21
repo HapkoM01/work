@@ -58,6 +58,7 @@
 ### Функции:
 
 #### `filter_by_currency(transactions, currency_code)`
+
 Фильтрует транзакции по коду валюты и возвращает итератор.
 
 from src.generators import filter_by_currency
@@ -65,9 +66,33 @@ from src.generators import filter_by_currency
 transactions = [...]  # список транзакций
 usd_transactions = filter_by_currency(transactions, "USD")
 
+**Пример:** usd_transactions = filter_by_currency(transactions, "USD")
+for transaction in usd_transactions:
+    print(transaction["id"])
+
+#### `transaction_descriptions(transactions)`
+
+Генератор, который возвращает описания транзакций.
+
+**Пример:** descriptions = transaction_descriptions(transactions)
+for description in descriptions:
+    print(description)
+
 # Получение первых двух транзакций
 for _ in range(2):
     print(next(usd_transactions))
+
+#### `card_number_generator(start, stop)`
+
+Генератор номеров банковских карт в заданном диапазоне.
+
+**Пример:** for card in card_number_generator(1, 5):
+    print(card)
+# Вывод:
+# 0000 0000 0000 0001
+# 0000 0000 0000 0002
+# 0000 0000 0000 0003
+# 0000 0000 0000 0004
 
 ## Тестирование
 
