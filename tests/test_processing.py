@@ -134,4 +134,4 @@ def test_combined_filter_and_sort():
 
 if __name__ == "__main__":
     # Запуск тестов вручную
-    pytest.main([__file__, "-v"])
+    unittest.main([__file__, "-v"])
