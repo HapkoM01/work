@@ -2,3 +2,5 @@ __pycache__/
 *.pyc
 .idea/
 .venv/
+.env.template
+__env__.env

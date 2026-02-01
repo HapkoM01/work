@@ -1,14 +1,17 @@
-import sys
-import os
-import tempfile
-import pytest
 import functools
+import os
+import sys
+import tempfile
 
+import pytest
+
+from src.decorators import log
+
+# Добавляем путь к проекту
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.insert(0, project_root)
-
-from src.decorators import log
 
 
 def test_write_log_to_file():
@@ -168,8 +171,7 @@ def test_log_with_complex_arguments():
 
 
 def test_log_timestamp_inclusion():
-    """Тест, что timestamp добавляется в логи (если вы его используете)."""
-    # Если в вашем декораторе есть timestamp, добавьте проверку
+    """Тест, что timestamp добавляется в логи."""
     with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as tmp:
         filename = tmp.name
 
@@ -181,9 +183,8 @@ def test_log_timestamp_inclusion():
         timestamp_func()
 
         with open(filename, 'r', encoding='utf-8') as f:
-            content = f.read()
-            # Если timestamp есть, проверяем его формат
-            # assert len(content) > len("timestamp_func ok\n")
+
+            f.read()
 
     finally:
         if os.path.exists(filename):

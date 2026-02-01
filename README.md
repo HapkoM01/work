@@ -68,7 +68,7 @@ usd_transactions = filter_by_currency(transactions, "USD")
 
 **Пример:** usd_transactions = filter_by_currency(transactions, "USD")
 for transaction in usd_transactions:
-    print(transaction["id"])
+print(transaction["id"])
 
 #### `transaction_descriptions(transactions)`
 
@@ -76,22 +76,28 @@ for transaction in usd_transactions:
 
 **Пример:** descriptions = transaction_descriptions(transactions)
 for description in descriptions:
-    print(description)
+print(description)
 
 # Получение первых двух транзакций
+
 for _ in range(2):
-    print(next(usd_transactions))
+print(next(usd_transactions))
 
 #### `card_number_generator(start, stop)`
 
 Генератор номеров банковских карт в заданном диапазоне.
 
 **Пример:** for card in card_number_generator(1, 5):
-    print(card)
+print(card)
+
 # Вывод:
+
 # 0000 0000 0000 0001
+
 # 0000 0000 0000 0002
+
 # 0000 0000 0000 0003
+
 # 0000 0000 0000 0004
 
 ## Модуль decorators
@@ -108,6 +114,7 @@ for _ in range(2):
 - Входные параметры (при ошибке)
 
 #### Параметры:
+
 - `filename` (опциональный): если указан - логи пишутся в файл, иначе выводятся в консоль
 
 #### Пример использования:
@@ -116,16 +123,16 @@ from decorators import log
 
 @log(filename="operations.log")
 def add(a, b):
-    return a + b
+return a + b
 
 @log()  # Вывод в консоль
 def divide(a, b):
-    return a / b
+return a / b
 
 # Использование
+
 add(5, 3)  # Запись в файл: "add ok"
 divide(10, 2)  # Вывод в консоль: "divide ok"
-
 
 ## Покрытие тестами
 
@@ -135,8 +142,25 @@ divide(10, 2)  # Вывод в консоль: "divide ok"
 - Полный HTML-отчёт: [htmlcov/index.html](htmlcov/index.html)
 
 Чтобы открыть отчёт:
+
 1. Скачай репозиторий
 2. Открой файл `htmlcov/index.html` в браузере
+
+## Модуль utils
+
+Содержит функцию для чтения JSON с операциями:
+
+**read_operations_json(file_path: str) -> list[dict]**
+
+Читает JSON и возвращает список транзакций. Возвращает [] при ошибках.
+
+## Модуль external_api
+
+Содержит функцию для конвертации суммы в рубли:
+
+**convert_to_rub(transaction: dict) -> float**
+
+Конвертирует сумму транзакции в RUB, используя API если нужно.
 
 ## Тестирование
 

@@ -1,4 +1,43 @@
+import os
+import sys
+
 import pytest
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
+@pytest.fixture
+def sample_transaction():
+    """Фикстура с примером транзакции."""
+    return {
+        "id": 1,
+        "amount": "100.50",
+        "currency": "USD",
+        "date": "2024-01-30",
+        "description": "Test transaction"
+    }
+
+
+@pytest.fixture
+def json_file_with_data():
+    """Фикстура с временным JSON файлом с данными."""
+    import json
+    import tempfile
+
+    data = [
+        {"id": 1, "amount": "100.50", "currency": "USD"},
+        {"id": 2, "amount": "200.00", "currency": "RUB"}
+    ]
+
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        json.dump(data, f)
+        temp_path = f.name
+
+    yield temp_path
+
+    # Очистка
+    if os.path.exists(temp_path):
+        os.unlink(temp_path)
 
 
 @pytest.fixture
@@ -10,6 +49,8 @@ def common_operations():
         {"id": 594226727, "state": "CANCELED", "date": "2018-09-12T21:27:25.241689"},
         {"id": 615064591, "state": "CANCELED", "date": "2018-10-14T08:21:33.419441"},
     ]
+
+
 def sample_transactions():
     """Sample transactions data for testing generators."""
     return [
