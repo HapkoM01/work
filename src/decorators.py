@@ -33,10 +33,7 @@ def log(filename: Optional[str] = None) -> Callable:
 
             except Exception as e:
                 # Формируем сообщение об ошибке
-                error_message = (
-                    f"{func_name} error: {type(e).__name__}. "
-                    f"Inputs: {args}, {kwargs}\n"
-                )
+                error_message = f"{func_name} error: {type(e).__name__}. " f"Inputs: {args}, {kwargs}\n"
 
                 # Логируем ошибку
                 _write_log(error_message, filename)
@@ -66,7 +63,7 @@ def _write_log(message: str, filename: Optional[str] = None) -> None:
         filename: Имя файла. Если None - вывод в консоль.
     """
     if filename:
-        with open(filename, 'a', encoding='utf-8') as f:
+        with open(filename, "a", encoding="utf-8") as f:
             f.write(message)
     else:
-        print(message, end='')
+        print(message, end="")

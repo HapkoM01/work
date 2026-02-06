@@ -1,5 +1,5 @@
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from src.external_api import convert_to_rub
 
 

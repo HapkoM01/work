@@ -9,13 +9,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 @pytest.fixture
 def sample_transaction():
     """Фикстура с примером транзакции."""
-    return {
-        "id": 1,
-        "amount": "100.50",
-        "currency": "USD",
-        "date": "2024-01-30",
-        "description": "Test transaction"
-    }
+    return {"id": 1, "amount": "100.50", "currency": "USD", "date": "2024-01-30", "description": "Test transaction"}
 
 
 @pytest.fixture
@@ -24,12 +18,9 @@ def json_file_with_data():
     import json
     import tempfile
 
-    data = [
-        {"id": 1, "amount": "100.50", "currency": "USD"},
-        {"id": 2, "amount": "200.00", "currency": "RUB"}
-    ]
+    data = [{"id": 1, "amount": "100.50", "currency": "USD"}, {"id": 2, "amount": "200.00", "currency": "RUB"}]
 
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
         json.dump(data, f)
         temp_path = f.name
 

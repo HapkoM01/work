@@ -1,7 +1,6 @@
-import pytest
-from unittest.mock import patch, mock_open
+from unittest.mock import mock_open, patch
+
 from src.utils import get_financial_transactions
-from src.external_api import convert_to_rub
 
 
 def test_get_financial_transactions_valid():
@@ -23,3 +22,5 @@ def test_get_financial_transactions_invalid_json():
     with patch("builtins.open", mock_open(read_data="invalid json")):
         with patch("os.path.exists", return_value=True):
             assert get_financial_transactions("data/operations.json") == []
+
+

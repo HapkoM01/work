@@ -18,7 +18,7 @@ def test_write_log_to_file():
     """Тест внутренней функции _write_log с файлом."""
     from src.decorators import _write_log
 
-    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as tmp:
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as tmp:
         filename = tmp.name
 
     try:
@@ -27,14 +27,14 @@ def test_write_log_to_file():
         _write_log(test_message, filename)
 
         # Проверяем содержимое файла
-        with open(filename, 'r', encoding='utf-8') as f:
+        with open(filename, "r", encoding="utf-8") as f:
             content = f.read()
             assert content == test_message
 
         # Тестируем добавление в конец файла
         _write_log("Second message\n", filename)
 
-        with open(filename, 'r', encoding='utf-8') as f:
+        with open(filename, "r", encoding="utf-8") as f:
             content = f.read()
             assert content == test_message + "Second message\n"
 
@@ -88,10 +88,11 @@ def test_log_with_empty_filename():
 
 def test_log_with_special_characters():
     """Тест с функциями, возвращающими разные типы данных."""
-    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as tmp:
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as tmp:
         filename = tmp.name
 
     try:
+
         @log(filename=filename)
         def return_none():
             return None
@@ -110,11 +111,11 @@ def test_log_with_special_characters():
         assert return_dict() == {"key": "value"}
 
         # Проверяем, что все вызовы залогированы
-        with open(filename, 'r', encoding='utf-8') as f:
+        with open(filename, "r", encoding="utf-8") as f:
             content = f.read()
-            assert 'return_none ok' in content
-            assert 'return_list ok' in content
-            assert 'return_dict ok' in content
+            assert "return_none ok" in content
+            assert "return_list ok" in content
+            assert "return_dict ok" in content
 
     finally:
         if os.path.exists(filename):
@@ -123,10 +124,11 @@ def test_log_with_special_characters():
 
 def test_log_exception_propagation():
     """Тест, что исключение пробрасывается после логирования."""
-    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as tmp:
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as tmp:
         filename = tmp.name
 
     try:
+
         @log(filename=filename)
         def raise_custom_error():
             raise RuntimeError("Custom error message")
@@ -136,10 +138,10 @@ def test_log_exception_propagation():
             raise_custom_error()
 
         # Проверяем, что ошибка залогирована
-        with open(filename, 'r', encoding='utf-8') as f:
+        with open(filename, "r", encoding="utf-8") as f:
             content = f.read()
-            assert 'raise_custom_error error' in content
-            assert 'RuntimeError' in content
+            assert "raise_custom_error error" in content
+            assert "RuntimeError" in content
 
     finally:
         if os.path.exists(filename):
@@ -148,10 +150,11 @@ def test_log_exception_propagation():
 
 def test_log_with_complex_arguments():
     """Тест с комплексными аргументами."""
-    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as tmp:
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as tmp:
         filename = tmp.name
 
     try:
+
         @log(filename=filename)
         def complex_args(a, b=10, *args, **kwargs):
             return a + b + sum(args) + sum(kwargs.values())
@@ -161,9 +164,9 @@ def test_log_with_complex_arguments():
         assert result == 21  # 1 + 2 + 3 + 4 + 5 + 6
 
         # Проверяем логи
-        with open(filename, 'r', encoding='utf-8') as f:
+        with open(filename, "r", encoding="utf-8") as f:
             content = f.read()
-            assert 'complex_args ok' in content
+            assert "complex_args ok" in content
 
     finally:
         if os.path.exists(filename):
@@ -172,17 +175,18 @@ def test_log_with_complex_arguments():
 
 def test_log_timestamp_inclusion():
     """Тест, что timestamp добавляется в логи."""
-    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as tmp:
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as tmp:
         filename = tmp.name
 
     try:
+
         @log(filename=filename)
         def timestamp_func():
             return "timestamp test"
 
         timestamp_func()
 
-        with open(filename, 'r', encoding='utf-8') as f:
+        with open(filename, "r", encoding="utf-8") as f:
 
             f.read()
 
@@ -193,10 +197,11 @@ def test_log_timestamp_inclusion():
 
 def test_multiple_decorators():
     """Тест совместного использования нескольких декораторов."""
-    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as tmp:
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as tmp:
         filename = tmp.name
 
     try:
+
         def another_decorator(func):
             @functools.wraps(func)  # Добавьте это!
             def wrapper(*args, **kwargs):
@@ -212,9 +217,9 @@ def test_multiple_decorators():
         result = decorated_func(5)
         assert result == 12  # (5 + 1) * 2
 
-        with open(filename, 'r', encoding='utf-8') as f:
+        with open(filename, "r", encoding="utf-8") as f:
             content = f.read()
-            assert 'decorated_func ok' in content  # Теперь будет работать
+            assert "decorated_func ok" in content  # Теперь будет работать
 
     finally:
         if os.path.exists(filename):
