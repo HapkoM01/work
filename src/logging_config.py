@@ -19,7 +19,7 @@ def setup_module_logger(module_name: str, level: int = logging.DEBUG) -> logging
     # File handler — перезапись при каждом запуске
     file_handler = logging.FileHandler(
         filename=LOGS_DIR / f"{module_name}.log",
-        mode="w",               # ← именно "w" — перезапись
+        mode="w",  # ← именно "w" — перезапись
         encoding="utf-8"
     )
 

@@ -6,9 +6,9 @@ from src.external_api import convert_to_rub
 
 @pytest.mark.parametrize("currency, expected", [
     ("RUB", 1500.0),
-    ("USD", 0.0),          # без API вернёт 0
+    ("USD", 0.0),  # без API вернёт 0
     ("EUR", 0.0),
-    ("GBP", 0.0),          # неподдерживаемая → 0
+    ("GBP", 0.0),  # неподдерживаемая → 0
 ])
 def test_convert_to_rub_basic_cases(currency, expected):
     transaction = {

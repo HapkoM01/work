@@ -22,5 +22,3 @@ def test_get_financial_transactions_invalid_json():
     with patch("builtins.open", mock_open(read_data="invalid json")):
         with patch("os.path.exists", return_value=True):
             assert get_financial_transactions("data/operations.json") == []
-
-

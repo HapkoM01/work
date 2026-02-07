@@ -5,6 +5,7 @@ import pytest
 from src.masks import get_mask_card_number
 from src.utils import get_financial_transactions
 
+
 def test_masks_success_logging(caplog):
     caplog.set_level(logging.INFO, logger="masks")
 
@@ -74,4 +75,3 @@ def test_utils_success_read_logging(caplog, tmp_path):
 
         assert "Слишком короткий номер карты" in caplog.text
         assert any(r.levelno == logging.ERROR for r in caplog.records)
-
