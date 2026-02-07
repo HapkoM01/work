@@ -1,4 +1,5 @@
 import logging
+
 from .logging_config import setup_module_logger
 
 logger = setup_module_logger("masks", level=logging.DEBUG)

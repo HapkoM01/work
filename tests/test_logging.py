@@ -17,10 +17,7 @@ def test_masks_success_logging(caplog):
     assert "masks" in caplog.text  # имя логгера
 
     # Можно проверять конкретные записи
-    assert any(
-        r.levelno == logging.INFO and "замаскирован номер карты" in r.message
-        for r in caplog.records
-    )
+    assert any(r.levelno == logging.INFO and "замаскирован номер карты" in r.message for r in caplog.records)
 
 
 def test_masks_error_logging(caplog):
@@ -30,10 +27,7 @@ def test_masks_error_logging(caplog):
         get_mask_card_number("123")  # слишком короткий
 
     assert "Слишком короткий номер карты" in caplog.text
-    assert any(
-        r.levelno == logging.ERROR and "короткий номер карты" in r.message
-        for r in caplog.records
-    )
+    assert any(r.levelno == logging.ERROR and "короткий номер карты" in r.message for r in caplog.records)
 
 
 def test_utils_file_not_found_logging(caplog, tmp_path):

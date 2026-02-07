@@ -1,6 +1,7 @@
 import json
-import os
 import logging
+import os
+
 from .logging_config import setup_module_logger
 
 logger = setup_module_logger("utils", level=logging.DEBUG)
@@ -14,7 +15,7 @@ def get_financial_transactions(file_path: str) -> list[dict]:
         return []
 
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             data = json.load(f)
             if isinstance(data, list):
                 logger.info(f"Успешно прочитано {len(data)} операций из {file_path}")

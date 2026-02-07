@@ -7,7 +7,7 @@ def mask_account_card(account_info: str) -> str:
 
     Args:
         account_info: Строка формата "Visa Platinum 7000792289606361"
-                     или "Счет 73654108430135874305"
+    или "Счет 73654108430135874305"
 
     Returns:
         Строка с замаскированным номером
