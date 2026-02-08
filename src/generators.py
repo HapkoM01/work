@@ -7,7 +7,7 @@ def mask_account_card(account_info: str) -> str:
 
     Args:
         account_info: Строка формата "Visa Platinum 7000792289606361"
-    или "Счет 73654108430135874305"
+            или "Счет 73654108430135874305"
 
     Returns:
         Строка с замаскированным номером
@@ -33,7 +33,7 @@ def mask_account_card(account_info: str) -> str:
         # Используем функцию маскировки счета
         masked_number = get_mask_account(number)
     else:
-        # Используем функцию маскировки карты
+        # По умолчанию считаем картой
         masked_number = get_mask_card_number(number)
 
     return f"{name} {masked_number}"
@@ -41,38 +41,33 @@ def mask_account_card(account_info: str) -> str:
 
 def get_date(date_string: str) -> str:
     """
-    Преобразует дату из формата ISO в формат ДД.ММ.ГГГГ.
+    Форматирует строку даты в формат DD.MM.YYYY.
 
     Args:
-        date_string: Дата в формате "2024-03-11T02:26:18.671407"
+        date_string: Строка даты в формате ISO 8601 (например, "2024-03-11T02:26:18.671407")
 
     Returns:
-        Дата в формате "11.03.2024"
+        Строка даты в формате "DD.MM.YYYY"
 
     Examples:
         >>> get_date("2024-03-11T02:26:18.671407")
         '11.03.2024'
     """
     try:
-        # Разделяем строку по 'T' и берем первую часть (дату)
+        # Разделяем по 'T' и берём дату
         date_part = date_string.split("T")[0]
 
-        # Разделяем дату на год, месяц и день
+        # Разделяем по '-' и форматируем
         year, month, day = date_part.split("-")
 
-        # Проверяем валидность даты
-        month_int = int(month)
-        day_int = int(day)
+        # Проверяем валидность компонентов
+        if not (1 <= int(month) <= 12):
+            raise ValueError("Неверный месяц")
+        if not (1 <= int(day) <= 31):
+            raise ValueError("Неверный день")
 
-        if not (1 <= month_int <= 12):
-            raise ValueError(f"Неверный месяц: {month}")
-
-        # Проверяем дни (упрощенно, без учета дней в месяце)
-        if not (1 <= day_int <= 31):
-            raise ValueError(f"Неверный день: {day}")
-
-        # Форматируем в нужный формат
         return f"{day}.{month}.{year}"
+
     except (ValueError, IndexError) as e:
         # Преобразуем в ValueError для единообразия
         raise ValueError(f"Некорректный формат даты: {date_string}") from e
