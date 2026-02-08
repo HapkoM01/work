@@ -162,6 +162,22 @@ divide(10, 2)  # Вывод в консоль: "divide ok"
 
 Конвертирует сумму транзакции в RUB, используя API если нужно.
 
+## Поддержка новых форматов данных
+
+Проект теперь поддерживает чтение финансовых транзакций не только из JSON, но и из CSV и XLSX файлов с помощью
+библиотеки pandas.
+
+- Модуль readers.py содержит функции:
+    - read_csv_transactions(file_path: str) -> List[Dict]: Читает транзакции из CSV.
+    - read_excel_transactions(file_path: str) -> List[Dict]: Читает транзакции из XLSX.
+
+Пример использования:
+
+from src.readers import read_csv_transactions
+
+transactions = read_csv_transactions("transactions.csv")
+print(transactions[0])
+
 ## Тестирование
 
 Проект использует `pytest` для тестирования.
