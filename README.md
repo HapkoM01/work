@@ -178,6 +178,18 @@ from src.readers import read_csv_transactions
 transactions = read_csv_transactions("transactions.csv")
 print(transactions[0])
 
+## Модуль readers
+
+Содержит функции для чтения данных из различных форматов:
+
+**read_csv_transactions(file_path: str) -> List[Dict[str, Any]]**
+- Считывает финансовые операции из CSV-файла (разделитель `;`).
+- Возвращает список словарей.
+
+**read_excel_transactions(file_path: str) -> List[Dict[str, Any]]**
+- Считывает финансовые операции из файлов Excel (.xlsx).
+- Использует движок `openpyxl`.
+
 ## Тестирование
 
 Проект использует `pytest` для тестирования.
