@@ -1,43 +1,31 @@
-from unittest.mock import patch
+import os
+import requests
+from dotenv import load_dotenv
 
-import pytest
+load_dotenv()
 
-from src.external_api import convert_to_rub
+API_KEY = os.getenv("API_KEY")
 
+def convert_to_rub(transaction):
+    try:
+        amount = float(transaction['operationAmount']['amount'])
+        currency = transaction['operationAmount']['currency']['code']
+    except (KeyError, TypeError, ValueError):
+        return 0.0
 
-@pytest.mark.parametrize(
-    "currency, expected",
-    [
-        ("RUB", 1500.0),
-        ("USD", 0.0),  # без API вернёт 0
-        ("EUR", 0.0),
-        ("GBP", 0.0),  # неподдерживаемая → 0
-    ],
-)
-def test_convert_to_rub_basic_cases(currency, expected):
-    transaction = {"operationAmount": {"amount": "1500.0", "currency": {"code": currency}}}
-    result = convert_to_rub(transaction)
-    assert result == expected
+    if currency == 'RUB':
+        return amount
 
+    if currency in ['USD', 'EUR']:
+        url = f"https://api.apilayer.com/exchangerates_data/convert?to=RUB&from={currency}&amount={amount}"
+        headers = {"apikey": API_KEY}
 
-@patch("requests.get")
-def test_convert_to_rub_api_success(mock_get):
-    mock_response = mock_get.return_value
-    mock_response.status_code = 200
-    mock_response.json.return_value = {"result": 135000.0}
+        try:
+            response = requests.get(url, headers=headers, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            return float(data.get('result', 0.0))
+        except (requests.RequestException, KeyError):
+            return 0.0
 
-    transaction = {"operationAmount": {"amount": "1500.0", "currency": {"code": "USD"}}}
-
-    result = convert_to_rub(transaction)
-    assert result == 135000.0
-    mock_get.assert_called_once()
-
-
-@patch("requests.get")
-def test_convert_to_rub_api_failure(mock_get):
-    mock_get.side_effect = Exception("Connection error")
-
-    transaction = {"operationAmount": {"amount": "1000.0", "currency": {"code": "EUR"}}}
-
-    result = convert_to_rub(transaction)
-    assert result == 0.0
+    return 0.0

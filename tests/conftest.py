@@ -1,13 +1,9 @@
 import os
 import sys
-from pathlib import Path
 
 import pytest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-project_root = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(project_root))
-sys.path.insert(0, str(project_root / "src"))
 
 
 @pytest.fixture

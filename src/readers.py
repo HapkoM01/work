@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 import pandas as pd
 
@@ -32,18 +32,22 @@ def read_csv_transactions(file_path: str) -> List[Dict[str, Any]]:
         raise ValueError(f"CSV-файл не найден: {file_path}")
 
     try:
-        df = pd.read_csv(file_path, sep=';', dtype=str)  # dtype=str — чтобы избежать проблем с типами
-        if df.empty:
-            logger.info(f"CSV-файл {file_path} пустой")
+        df = pd.read_csv(file_path, sep=';', dtype=str)
+
+        # Если файл пустой или содержит только заголовок — возвращаем []
+        if df.empty or len(df.columns) == 0:
+            logger.info(f"CSV-файл {file_path} пустой или содержит только заголовки")
             return []
 
-        # Приводим названия столбцов к нижнему регистру (на всякий случай)
         df.columns = df.columns.str.lower().str.strip()
-
         records = df.to_dict(orient='records')
         logger.info(f"Успешно прочитано {len(records)} транзакций из CSV {file_path}")
         return records
 
+    except pd.errors.EmptyDataError:
+        # Специально обрабатываем пустой файл / только заголовок
+        logger.info(f"CSV-файл {file_path} пустой или содержит только заголовки")
+        return []
     except pd.errors.ParserError as e:
         logger.error(f"Ошибка парсинга CSV-файла {file_path}: {e}")
         raise ValueError(f"Невозможно разобрать CSV-файл: {e}")

@@ -8,6 +8,8 @@ packages = [{include = "src", from = "."}]
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
+pandas = "^2.0.0"
+openpyxl = "^3.1.0"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.0.0"
@@ -15,7 +17,7 @@ black = "^24.0.0"
 isort = "^5.13.0"
 mypy = "^1.8.0"
 pytest = "^8.0.0"
-pytest-cov = ">=4.1.0,<5.0.0"  # Версия для Python 3.8
+pytest-cov = "^5.0.0"
 coverage = "^7.0.0"
 
 [build-system]
@@ -46,7 +48,7 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "-v --tb=short --cov=src --cov-report=html --cov-fail-under=80"
+addopts = "-v --cov=src --cov-report=html --cov-fail-under=80"
 
 [tool.coverage.run]
 source = ["src"]
