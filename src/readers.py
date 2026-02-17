@@ -32,7 +32,7 @@ def read_csv_transactions(file_path: str) -> List[Dict[str, Any]]:
         raise ValueError(f"CSV-файл не найден: {file_path}")
 
     try:
-        df = pd.read_csv(file_path, sep=';', dtype=str)
+        df = pd.read_csv(file_path, sep=";", dtype=str)
 
         # Если файл пустой или содержит только заголовок — возвращаем []
         if df.empty or len(df.columns) == 0:
@@ -40,7 +40,7 @@ def read_csv_transactions(file_path: str) -> List[Dict[str, Any]]:
             return []
 
         df.columns = df.columns.str.lower().str.strip()
-        records = df.to_dict(orient='records')
+        records = df.to_dict(orient="records")
         logger.info(f"Успешно прочитано {len(records)} транзакций из CSV {file_path}")
         return records
 
@@ -78,7 +78,7 @@ def read_excel_transactions(file_path: str) -> List[Dict[str, Any]]:
         raise ValueError(f"Excel-файл не найден: {file_path}")
 
     try:
-        df = pd.read_excel(file_path, engine='openpyxl', dtype=str)
+        df = pd.read_excel(file_path, engine="openpyxl", dtype=str)
         if df.empty:
             logger.info(f"Excel-файл {file_path} пустой")
             return []
@@ -86,7 +86,7 @@ def read_excel_transactions(file_path: str) -> List[Dict[str, Any]]:
         # Приводим названия столбцов к нижнему регистру и убираем лишние пробелы
         df.columns = df.columns.str.lower().str.strip()
 
-        records = df.to_dict(orient='records')
+        records = df.to_dict(orient="records")
         logger.info(f"Успешно прочитано {len(records)} транзакций из Excel {file_path}")
         return records
 

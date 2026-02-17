@@ -26,6 +26,6 @@ def get_financial_transactions(file_path: str) -> list[dict]:
     except json.JSONDecodeError as e:
         logger.error(f"Ошибка декодирования JSON в файле {file_path}: {e}")
         return []
-    except Exception as e:
+    except Exception:
         logger.exception(f"Неожиданная ошибка при чтении файла {file_path}")
         return []
