@@ -101,5 +101,5 @@ def card_number_generator(start: int, stop: int) -> Generator[str, None, None]:
         # Дополняем до 16 цифр нулями слева
         card_num = f"{num:016d}"
         # Форматируем с пробелами каждые 4 цифры
-        formatted = " ".join(card_num[i : i + 4] for i in range(0, 16, 4))
+        formatted = " ".join(card_num[i: i + 4] for i in range(0, 16, 4))
         yield formatted

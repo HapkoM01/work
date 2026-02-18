@@ -4,8 +4,8 @@ import pytest
 
 from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
 
-
 # Фикстуры
+
 
 @pytest.fixture
 def sample_transactions() -> List[Dict[str, Any]]:
@@ -69,6 +69,7 @@ def transactions_without_currency() -> List[Dict[str, Any]]:
 
 # Тесты для filter_by_currency
 
+
 class TestFilterByCurrency:
     """Тесты для функции filter_by_currency."""
 
@@ -121,6 +122,7 @@ class TestFilterByCurrency:
 
 
 # Тесты для transaction_descriptions
+
 
 class TestTransactionDescriptions:
     """Тесты для функции transaction_descriptions."""
@@ -175,6 +177,7 @@ class TestTransactionDescriptions:
 
 
 # Тесты для card_number_generator
+
 
 class TestCardNumberGenerator:
     """Тесты для генератора номеров карт card_number_generator."""
@@ -244,6 +247,7 @@ class TestCardNumberGenerator:
 
 
 # Интеграционный тест
+
 
 def test_all_functions_integration(sample_transactions):
     """Интеграционный тест: совместная работа всех функций."""
