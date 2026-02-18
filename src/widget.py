@@ -7,7 +7,7 @@ def mask_account_card(account_info: str) -> str:
 
     Args:
         account_info: Строка формата "Visa Platinum 7000792289606361"
-                     или "Счет 73654108430135874305"
+    или "Счет 73654108430135874305"
 
     Returns:
         Строка с замаскированным номером
@@ -53,14 +53,29 @@ def get_date(date_string: str) -> str:
         >>> get_date("2024-03-11T02:26:18.671407")
         '11.03.2024'
     """
-    # Разделяем строку по 'T' и берем первую часть (дату)
-    date_part = date_string.split("T")[0]
+    try:
+        # Разделяем строку по 'T' и берем первую часть (дату)
+        date_part = date_string.split("T")[0]
 
-    # Разделяем дату на год, месяц и день
-    year, month, day = date_part.split("-")
+        # Разделяем дату на год, месяц и день
+        year, month, day = date_part.split("-")
 
-    # Форматируем в нужный формат
-    return f"{day}.{month}.{year}"
+        # Проверяем валидность даты
+        month_int = int(month)
+        day_int = int(day)
+
+        if not (1 <= month_int <= 12):
+            raise ValueError(f"Неверный месяц: {month}")
+
+        # Проверяем дни (упрощенно, без учета дней в месяце)
+        if not (1 <= day_int <= 31):
+            raise ValueError(f"Неверный день: {day}")
+
+        # Форматируем в нужный формат
+        return f"{day}.{month}.{year}"
+    except (ValueError, IndexError) as e:
+        # Преобразуем в ValueError для единообразия
+        raise ValueError(f"Некорректный формат даты: {date_string}") from e
 
 
 if __name__ == "__main__":
