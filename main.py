@@ -1,119 +1,98 @@
-from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
-from src.masks import get_mask_account, get_mask_card_number
+import json
+from pathlib import Path
+
+from src.utils import get_financial_transactions
+from src.readers import read_csv_transactions, read_excel_transactions
 from src.processing import filter_by_state, sort_by_date
-from src.widget import get_date, mask_account_card
+from src.search import process_bank_search, process_bank_operations
+from src.widget import mask_account_card, get_date
 
 
-def main() -> None:
-    """Основная функция приложения."""
-    print("=" * 60)
-    print("Bank Operations Widget")
-    print("=" * 60)
+def main():
+    print("Программа: Привет! Добро пожаловать в программу работы с банковскими транзакциями.")
+    print("Меню:")
+    print("1. Получить информацию о транзакциях из JSON-файла")
+    print("2. Получить информацию о транзакциях из CSV-файла")
+    print("3. Получить информацию о транзакциях из XLSX-файла")
 
-    # Примеры из модуля masks
-    print("\n1. Примеры работы модуля masks:")
-    print("-" * 40)
+    choice = input("Пожалуйста, выберите пункт меню: ").strip()
 
-    card_number = "780079228966361"
-    account_number = "73654188438135874305"
+    if choice not in ["1", "2", "3"]:
+        print("Программа: Неверный выбор. Завершение работы.")
+        return
 
-    print(f"Номер карты: {card_number}")
-    print(f"Маска карты: {get_mask_card_number(card_number)}")
-    print(f"\nНомер счета: {account_number}")
-    print(f"Маска счета: {get_mask_account(account_number)}")
+    file_path = input("Введите путь к файлу: ").strip()
+    if not Path(file_path).exists():
+        print("Программа: Файл не найден.")
+        return
 
-    # Примеры из модуля widget
-    print("\n\n2. Примеры работы модуля widget:")
-    print("-" * 40)
+    # Чтение данных в зависимости от выбора
+    if choice == "1":
+        print("Программа: Для обработки выбран JSON-файл.")
+        transactions = get_financial_transactions(file_path)
+    elif choice == "2":
+        print("Программа: Для обработки выбран CSV-файл.")
+        transactions = read_csv_transactions(file_path)
+    else:
+        print("Программа: Для обработки выбран XLSX-файл.")
+        transactions = read_excel_transactions(file_path)
 
-    examples = [
-        "Visa Platinum 7000792289606361",
-        "Счет 73654108430135874305",
-    ]
+    if not transactions:
+        print("Программа: Не найдено ни одной транзакции в файле.")
+        return
 
-    for example in examples:
-        result = mask_account_card(example)
-        print(f"{example}")
-        print(f"→ {result}\n")
+    # Фильтрация по статусу
+    print("Программа: Введите статус, по которому необходимо выполнить фильтрацию.")
+    print("Доступные статусы: EXECUTED, CANCELED, PENDING")
+    status = input("Пожалуйста, введите статус: ").strip().upper()
 
-    date_example = "2024-03-11T02:26:18.671407"
-    print("Форматирование даты:")
-    print(f"Исходная дата: {date_example}")
-    print(f"Форматированная: {get_date(date_example)}")
+    valid_statuses = {"EXECUTED", "CANCELED", "PENDING"}
+    while status not in valid_statuses:
+        print(f"Программа: Статус операции \"{status}\" недоступен.")
+        status = input("Пожалуйста, введите статус: ").strip().upper()
 
-    # Примеры из модуля processing
-    print("\n\n3. Примеры работы модуля processing:")
-    print("-" * 40)
+    print(f"Программа: Операции отфильтрованы по статусу \"{status}\"")
+    filtered = filter_by_state(transactions, status)
 
-    operations = [
-        {"id": 41428829, "state": "EXECUTED", "date": "2019-07-03T18:35:29.512364"},
-        {"id": 939719570, "state": "EXECUTED", "date": "2018-06-30T02:08:58.425572"},
-        {"id": 594226727, "state": "CANCELED", "date": "2018-09-12T21:27:25.241689"},
-        {"id": 615064591, "state": "CANCELED", "date": "2018-10-14T08:21:33.419441"},
-    ]
+    if not filtered:
+        print("Программа: Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
+        return
 
-    print("Исходные операции:")
-    for op in operations:
-        print(f"  ID: {op['id']}, State: {op['state']}, Date: {op['date']}")
+    # Дополнительные фильтры
+    sort_choice = input("Программа: Отсортировать операции по дате? Да/Нет\n").strip().lower()
+    if sort_choice in ("да", "yes", "y"):
+        order = input("Программа: Отсортировать по возрастанию или по убыванию?\n").strip().lower()
+        descending = order in ("по убыванию", "убыванию", "desc", "down")
+        filtered = sort_by_date(filtered, descending=descending)
 
-    print("\nФильтрация (state='EXECUTED'):")
-    executed_ops = filter_by_state(operations, "EXECUTED")
-    for op in executed_ops:
-        print(f"  ID: {op['id']}, Date: {op['date']}")
+    rub_only = input("Программа: Выводить только рублёвые транзакции? Да/Нет\n").strip().lower()
+    if rub_only in ("да", "yes", "y"):
+        filtered = [t for t in filtered if t.get("operationAmount", {}).get("currency", {}).get("code") == "RUB"]
 
-    print("\nСортировка по дате (по убыванию):")
-    sorted_ops = sort_by_date(operations, True)
-    for op in sorted_ops:
-        print(f"  ID: {op['id']}, Date: {op['date']}")
+    search_word = input("Программа: Отфильтровать список транзакций по определённому слову в описании? Да/Нет\n").strip().lower()
+    if search_word in ("да", "yes", "y"):
+        word = input("Введите слово для поиска: ").strip()
+        filtered = process_bank_search(filtered, word)
 
-    # Примеры из модуля generators
-    print("\n\n4. Примеры работы модуля generators:")
-    print("-" * 40)
+    # Подсчёт категорий
+    categories = ["Перевод", "Оплата", "Открытие вклада", "Покупка"]  # можно сделать вводимыми
+    category_counts = process_bank_operations(filtered, categories)
+    print("\nПрограмма: Статистика по категориям:")
+    for cat, count in category_counts.items():
+        print(f"{cat}: {count} операций")
 
-    transactions = [
-        {
-            "id": 939719570,
-            "operationAmount": {
-                "amount": "9824.07",
-                "currency": {"code": "USD"}
-            },
-            "description": "Перевод организации"
-        },
-        {
-            "id": 142264268,
-            "operationAmount": {
-                "amount": "79114.93",
-                "currency": {"code": "USD"}
-            },
-            "description": "Перевод со счета на счет"
-        },
-        {
-            "id": 873106923,
-            "operationAmount": {
-                "amount": "43318.34",
-                "currency": {"code": "RUB"}
-            },
-            "description": "Перевод со счета на счет"
-        }
-    ]
+    # Вывод результата
+    print("\nПрограмма: Распечатываю итоговый список транзакций...")
+    print(f"Всего банковских операций в выборке: {len(filtered)}")
 
-    print("Фильтрация по валюте (USD):")
-    usd_transactions = filter_by_currency(transactions, "USD")
-    for i, trans in enumerate(usd_transactions, 1):
-        print(f"  Транзакция {i}: ID={trans['id']}")
-
-    print("\nОписания транзакций:")
-    descriptions = transaction_descriptions(transactions)
-    for i, desc in enumerate(descriptions, 1):
-        print(f"  Описание {i}: {desc}")
-
-    print("\nГенерация номеров карт (1-5):")
-    for card in card_number_generator(1, 6):
-        print(f"  {card}")
-
-    print("\n" + "=" * 60)
-    print("Все функции работают корректно!")
-    print("=" * 60)
+    for op in filtered:
+        masked_card = mask_account_card(f"{op.get('description', 'Операция')} {op.get('from', '')}")
+        date_formatted = get_date(op.get("date", ""))
+        amount = op["operationAmount"]["amount"]
+        currency = op["operationAmount"]["currency"]["code"]
+        print(f"{date_formatted} {masked_card}")
+        print(f"Сумма: {amount} {currency}")
+        print("-" * 40)
 
 
 if __name__ == "__main__":
