@@ -8,9 +8,25 @@ from src.search import process_bank_search, process_bank_operations
 from src.widget import mask_account_card, get_date
 
 
+def get_safe_amount(op):
+    """Безопасно получает сумму, возвращает 'Неизвестно' при отсутствии поля."""
+    try:
+        return op["operationAmount"]["amount"]
+    except (KeyError, TypeError):
+        return "Неизвестно"
+
+
+def get_safe_currency(op):
+    """Безопасно получает валюту."""
+    try:
+        return op["operationAmount"]["currency"]["code"]
+    except (KeyError, TypeError):
+        return "???"
+
+
 def main():
     print("Программа: Привет! Добро пожаловать в программу работы с банковскими транзакциями.")
-    print("Меню:")
+    print("Выберите необходимый пункт меню:")
     print("1. Получить информацию о транзакциях из JSON-файла")
     print("2. Получить информацию о транзакциях из CSV-файла")
     print("3. Получить информацию о транзакциях из XLSX-файла")
@@ -26,7 +42,7 @@ def main():
         print("Программа: Файл не найден.")
         return
 
-    # Чтение данных в зависимости от выбора
+    # Чтение данных
     if choice == "1":
         print("Программа: Для обработки выбран JSON-файл.")
         transactions = get_financial_transactions(file_path)
@@ -43,7 +59,7 @@ def main():
 
     # Фильтрация по статусу
     print("Программа: Введите статус, по которому необходимо выполнить фильтрацию.")
-    print("Доступные статусы: EXECUTED, CANCELED, PENDING")
+    print("Доступные для фильтрации статусы: EXECUTED, CANCELED, PENDING")
     status = input("Пожалуйста, введите статус: ").strip().upper()
 
     valid_statuses = {"EXECUTED", "CANCELED", "PENDING"}
@@ -58,39 +74,57 @@ def main():
         print("Программа: Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
         return
 
-    # Дополнительные фильтры
+    # Сортировка по дате
     sort_choice = input("Программа: Отсортировать операции по дате? Да/Нет\n").strip().lower()
-    if sort_choice in ("да", "yes", "y"):
+    if sort_choice in ("да", "yes", "y", "д"):
         order = input("Программа: Отсортировать по возрастанию или по убыванию?\n").strip().lower()
-        descending = order in ("по убыванию", "убыванию", "desc", "down")
+        descending = order in ("по убыванию", "убыванию", "desc", "down", "у", "уб")
         filtered = sort_by_date(filtered, descending=descending)
 
+    # Только рублёвые
     rub_only = input("Программа: Выводить только рублёвые транзакции? Да/Нет\n").strip().lower()
-    if rub_only in ("да", "yes", "y"):
-        filtered = [t for t in filtered if t.get("operationAmount", {}).get("currency", {}).get("code") == "RUB"]
+    if rub_only in ("да", "yes", "y", "д"):
+        filtered = [
+            t for t in filtered
+            if t.get("operationAmount", {}).get("currency", {}).get("code") == "RUB"
+        ]
 
-    search_word = input("Программа: Отфильтровать список транзакций по определённому слову в описании? Да/Нет\n").strip().lower()
-    if search_word in ("да", "yes", "y"):
+    # Поиск по слову
+    search_choice = input("Программа: Отфильтровать список транзакций по определённому слову в описании? Да/Нет\n").strip().lower()
+    if search_choice in ("да", "yes", "y", "д"):
         word = input("Введите слово для поиска: ").strip()
         filtered = process_bank_search(filtered, word)
 
-    # Подсчёт категорий
+    # Статистика категорий
     categories = ["Перевод", "Оплата", "Открытие вклада", "Покупка"]  # можно сделать вводимыми
     category_counts = process_bank_operations(filtered, categories)
     print("\nПрограмма: Статистика по категориям:")
     for cat, count in category_counts.items():
         print(f"{cat}: {count} операций")
 
-    # Вывод результата
+    # Вывод итогового списка
     print("\nПрограмма: Распечатываю итоговый список транзакций...")
     print(f"Всего банковских операций в выборке: {len(filtered)}")
 
+    if not filtered:
+        print("Программа: Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
+        return
+
     for op in filtered:
-        masked_card = mask_account_card(f"{op.get('description', 'Операция')} {op.get('from', '')}")
-        date_formatted = get_date(op.get("date", ""))
-        amount = op["operationAmount"]["amount"]
-        currency = op["operationAmount"]["currency"]["code"]
-        print(f"{date_formatted} {masked_card}")
+        date_str = op.get("date", "Неизвестно")
+        description = op.get("description", "Операция")
+        from_acc = op.get("from", "")
+        amount = op.get("operationAmount", {}).get("amount", "Неизвестно")
+        currency = op.get("operationAmount", {}).get("currency", {}).get("code", "???")
+
+        try:
+            masked = mask_account_card(f"{description} {from_acc}")
+        except ValueError as e:
+            masked = f"{description} {from_acc} (ошибка маскировки: {e})"
+
+        date_formatted = get_date(date_str) if date_str != "Неизвестно" else date_str
+
+        print(f"{date_formatted} {masked}")
         print(f"Сумма: {amount} {currency}")
         print("-" * 40)
 
